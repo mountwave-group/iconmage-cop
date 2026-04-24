@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    background: #0f0f0f;
+    color: #ffffff;
+    min-height: 100vh;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+  }
+  ::selection {
+    background: rgba(201, 164, 138, 0.3);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply font-sans text-[11px] font-light uppercase tracking-eyebrow text-ink-muted;
+  }
+  .label {
+    @apply font-sans text-[12px] font-normal tracking-label text-ink-secondary;
+  }
+  .serif-headline {
+    @apply font-serif font-normal text-ink-primary;
+  }
+  .panel {
+    @apply bg-bg-surface border border-bronze-line rounded-luxe;
+  }
+  .pill {
+    @apply inline-flex items-center border border-bronze-line rounded-luxe px-3 py-1 text-[10px] uppercase tracking-eyebrow text-bronze;
+  }
+  .pill-muted {
+    @apply inline-flex items-center border border-white/15 rounded-luxe px-3 py-1 text-[10px] uppercase tracking-eyebrow text-ink-muted;
+  }
+}
+
+.card-hover {
+  position: relative;
+  transition: box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  overflow: hidden;
+}
+.card-hover::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #c9a48a 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  pointer-events: none;
+}
+.card-hover:hover::before {
+  transform: translateX(100%);
+}
+.card-hover:hover {
+  box-shadow:
+    0 0 0 1px #c9a48a,
+    0 0 40px rgba(201, 164, 138, 0.14);
+}
+
+.band {
+  animation: rise-in 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.band-1 { animation-delay: 80ms; }
+.band-2 { animation-delay: 160ms; }
+.band-3 { animation-delay: 240ms; }
+.band-4 { animation-delay: 320ms; }
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
