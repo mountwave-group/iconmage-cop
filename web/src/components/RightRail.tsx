@@ -1,15 +1,17 @@
 import { signals, ledger } from '../data'
+import { useI18n } from '../i18n'
 
 export function SignalColumn({ onOpen }: { onOpen?: () => void }) {
+  const { t } = useI18n()
   return (
     <section className="panel">
       <header className="flex items-baseline justify-between px-8 pt-8 pb-6">
-        <h2 className="serif-headline text-[22px]">Signals</h2>
+        <h2 className="serif-headline text-[22px]">{t('signals.title')}</h2>
         <button
           onClick={onOpen}
           className="eyebrow hover:text-bronze transition-colors duration-200 ease-luxe"
         >
-          LAST 24 H —
+          {t('signals.last24h')}
         </button>
       </header>
       <ul>
@@ -38,11 +40,12 @@ export function SignalColumn({ onOpen }: { onOpen?: () => void }) {
 }
 
 export function LedgerPreview() {
+  const { t } = useI18n()
   return (
     <section className="panel">
       <header className="flex items-baseline justify-between px-8 pt-8 pb-6">
-        <h2 className="serif-headline text-[22px]">Ledger</h2>
-        <span className="eyebrow">APRIL</span>
+        <h2 className="serif-headline text-[22px]">{t('ledger.title')}</h2>
+        <span className="eyebrow">{t('ledger.monthApril')}</span>
       </header>
       <ul className="px-8">
         {ledger.map((l, i) => (
@@ -69,8 +72,8 @@ export function LedgerPreview() {
           <div className="absolute left-0 top-0 h-px bg-bronze w-[80%]" />
         </div>
         <div className="mt-3 flex justify-between eyebrow">
-          <span>01 APR</span>
-          <span>30 APR</span>
+          <span>{t('ledger.rangeStart')}</span>
+          <span>{t('ledger.rangeEnd')}</span>
         </div>
       </div>
     </section>

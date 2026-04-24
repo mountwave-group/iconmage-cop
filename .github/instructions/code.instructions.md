@@ -15,3 +15,7 @@ applyTo: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.py"
 - Run relevant linting and tests for changed files first.
 - Run the broad project checks before concluding work.
 - If tests are missing for a changed area, add targeted tests or document the gap.
+
+## Design
+- Make sure web application is responsive and designed with pwa princiapls.
+- IOS, WEB, Andoid compatible fractionless design.

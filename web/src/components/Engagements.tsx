@@ -1,27 +1,29 @@
 import { engagements } from '../data'
+import { useI18n } from '../i18n'
 
 export function Engagements({ onOpen }: { onOpen?: () => void }) {
+  const { t } = useI18n()
   return (
     <section>
-      <header className="flex items-baseline justify-between mb-8">
-        <h2 className="serif-headline text-[28px]">Active Engagements</h2>
+      <header className="flex items-baseline justify-between mb-6 md:mb-8">
+        <h2 className="serif-headline text-[22px] md:text-[28px]">{t('engagements.title')}</h2>
         <button
           onClick={onOpen}
-          className="eyebrow hover:text-bronze transition-colors duration-200 ease-luxe"
+          className="eyebrow hover:text-bronze transition-colors duration-200 ease-luxe touch-target"
         >
-          VIEW ALL —
+          {t('engagements.viewAll')}
         </button>
       </header>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-5 md:gap-6">
         {engagements.map((e) => (
           <article
             key={e.client}
             onClick={onOpen}
-            className="card-hover panel px-12 py-8 cursor-pointer"
+            className="card-hover panel px-6 py-6 md:px-12 md:py-8 cursor-pointer"
           >
-            <div className="flex items-start justify-between">
-              <h3 className="font-serif text-[22px] text-ink-primary">
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="font-serif text-[18px] md:text-[22px] text-ink-primary">
                 {e.client}
               </h3>
               <span
@@ -29,7 +31,7 @@ export function Engagements({ onOpen }: { onOpen?: () => void }) {
                   e.status === 'ON HOLD' ? 'pill-muted' : 'pill'
                 }
               >
-                {e.status}
+                {t(`status.${e.status}`)}
               </span>
             </div>
 
@@ -37,29 +39,29 @@ export function Engagements({ onOpen }: { onOpen?: () => void }) {
               {e.service}
             </div>
 
-            <div className="mt-10 h-px bg-white/10 relative">
+            <div className="mt-8 md:mt-10 h-px bg-white/10 relative">
               <div
                 className="absolute left-0 top-0 h-px bg-bronze"
                 style={{ width: `${e.progress * 100}%` }}
               />
             </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-8">
+            <div className="mt-5 md:mt-6 grid grid-cols-3 gap-4 md:gap-8">
               <div>
-                <div className="eyebrow mb-1">STAGE</div>
-                <div className="font-serif text-[15px] text-ink-primary tabular-nums">
+                <div className="eyebrow mb-1">{t('field.stage')}</div>
+                <div className="font-serif text-[14px] md:text-[15px] text-ink-primary tabular-nums">
                   {e.stage}
                 </div>
               </div>
               <div>
-                <div className="eyebrow mb-1">DUE</div>
-                <div className="font-serif text-[15px] text-ink-primary">
+                <div className="eyebrow mb-1">{t('field.due')}</div>
+                <div className="font-serif text-[14px] md:text-[15px] text-ink-primary">
                   {e.due}
                 </div>
               </div>
               <div>
-                <div className="eyebrow mb-1">PROJECT MANAGER</div>
-                <div className="font-serif text-[15px] text-ink-primary">
+                <div className="eyebrow mb-1">{t('field.pm')}</div>
+                <div className="font-serif text-[14px] md:text-[15px] text-ink-primary truncate">
                   {e.pm}
                 </div>
               </div>

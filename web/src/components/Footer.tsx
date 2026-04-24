@@ -1,24 +1,11 @@
+import { useI18n } from '../i18n'
+
 export function Footer() {
-  const langs = ['EN', 'FR', 'RU']
-  const current = 'EN'
+  const { t } = useI18n()
   return (
-    <footer className="h-20 bg-bg-inset border-t border-bronze-line flex items-center justify-between px-24">
-      <div className="eyebrow">
-        ICON IMAGE GROUP · MONACO · PRIVATE &amp; CONFIDENTIAL
-      </div>
-      <div className="flex items-center gap-2">
-        {langs.map((l) => (
-          <button
-            key={l}
-            className={`rounded-luxe border px-3 py-1 text-[10px] tracking-eyebrow transition-colors duration-200 ease-luxe ${
-              l === current
-                ? 'border-bronze text-bronze'
-                : 'border-white/15 text-ink-muted hover:text-ink-primary'
-            }`}
-          >
-            {l}
-          </button>
-        ))}
+    <footer className="bg-bg-inset border-t border-bronze-line px-5 md:px-24 py-6 md:py-0 md:h-20 flex items-center justify-center md:justify-start">
+      <div className="eyebrow text-center md:text-left">
+        {t('footer.confidential')}
       </div>
     </footer>
   )

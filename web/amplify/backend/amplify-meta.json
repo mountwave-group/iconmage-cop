@@ -14,13 +14,8 @@
   },
   "hosting": {
     "S3AndCloudFront": {
-      "service": "S3AndCloudFront",
       "providerPlugin": "awscloudformation",
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-icopweb-dev-80a58-deployment/amplify-cfn-templates/hosting/template.json",
-        "logicalId": "hostingS3AndCloudFront"
-      },
-      "lastPushTimeStamp": "2026-04-24T13:02:42.568Z",
+      "service": "S3AndCloudFront",
       "output": {
         "CloudFrontSecureURL": "https://d1kgmyudtbgvxp.cloudfront.net",
         "S3BucketSecureURL": "https://icopweb-20260424135411-hostingbucket-dev.s3.amazonaws.com",
@@ -31,7 +26,11 @@
         "HostingBucketName": "icopweb-20260424135411-hostingbucket-dev",
         "CloudFrontDomainName": "d1kgmyudtbgvxp.cloudfront.net"
       },
-      "lastPushDirHash": "NFkHOxq1toWjSTtMig2gmXTrKH0="
+      "lastPushTimeStamp": "2026-04-24T15:25:12.257Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-icopweb-dev-80a58-deployment/amplify-cfn-templates/hosting/template.json",
+        "logicalId": "hostingS3AndCloudFront"
+      }
     }
   }
 }

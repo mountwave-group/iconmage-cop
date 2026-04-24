@@ -38,8 +38,62 @@ log_success "Built · $(du -sh "$WEB_DIR/dist" | cut -f1)"
 
 # ── Step 3: deploy ──────────────────────────────────────────────────────────
 log_header "Step 3 · Amplify Deploy"
-amplify publish --yes
+cd "$WEB_DIR"
+
+if ! command -v amplify >/dev/null 2>&1; then
+  log_error "Amplify CLI not found. Install: npm i -g @aws-amplify/cli"
+  exit 1
+fi
+
+if [ ! -d "$WEB_DIR/amplify" ]; then
+  log_error "No amplify/ directory in $WEB_DIR — run 'amplify init' first"
+  exit 1
+fi
+
+# Ensure we are on the 'dev' env (non-interactive). Falls back silently if already checked out.
+log_info "Ensuring Amplify env 'dev' is active"
+amplify env checkout dev 2>/dev/null || log_warn "Could not auto-checkout 'dev' (may already be active)"
+
+# Publish. --yes answers prompts; --invalidateCloudFront forces CDN bust.
+log_info "Publishing to Amplify hosting…"
+set +e
+amplify publish --yes --invalidateCloudFront
+AMPLIFY_EXIT=$?
+set -e
+
+if [ $AMPLIFY_EXIT -ne 0 ]; then
+  log_error "amplify publish failed (exit $AMPLIFY_EXIT)"
+  log_warn  "Common causes:"
+  echo     "  · DNS failure → try: sudo dscacheutil -flushcache; switch to 1.1.1.1"
+  echo     "  · AWS creds expired → amplify configure"
+  echo     "  · Env not pulled → amplify pull --envName dev"
+  exit $AMPLIFY_EXIT
+fi
 log_success "Deployed"
+
+# ── Step 3b: CloudFront cache invalidation ──────────────────────────────────
+log_header "Step 3b · CloudFront Invalidation"
+CF_DISTRIBUTION_ID="${CF_DISTRIBUTION_ID:-E11QT6WLU0YJR5}"
+if ! command -v aws >/dev/null 2>&1; then
+  log_warn "aws CLI not found — skipping CloudFront invalidation"
+else
+  log_info "Invalidating $CF_DISTRIBUTION_ID /*"
+  set +e
+  CF_OUT=$(aws cloudfront create-invalidation \
+    --distribution-id "$CF_DISTRIBUTION_ID" \
+    --paths "/*" \
+    --query 'Invalidation.Id' \
+    --output text 2>&1)
+  CF_EXIT=$?
+  set -e
+  if [ $CF_EXIT -ne 0 ]; then
+    log_error "CloudFront invalidation failed: $CF_OUT"
+    log_warn  "Check AWS creds / distribution ID and retry manually:"
+    echo     "  aws cloudfront create-invalidation --distribution-id $CF_DISTRIBUTION_ID --paths \"/*\""
+  else
+    log_success "Invalidation submitted · ID: $CF_OUT"
+  fi
+fi
 
 # ── Step 4: announce ────────────────────────────────────────────────────────
 log_header "Step 4 · Telegram Phase 2 Announcement"

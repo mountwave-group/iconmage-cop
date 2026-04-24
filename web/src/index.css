@@ -9,6 +9,12 @@
     background: #0f0f0f;
     color: #ffffff;
     min-height: 100vh;
+    /* iOS: use dynamic viewport to avoid URL-bar jumps */
+    min-height: 100dvh;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   body {
     font-family: 'Inter', system-ui, sans-serif;
@@ -16,10 +22,40 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: 'tnum' on, 'lnum' on;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+  button,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  /* Prevent iOS auto-zoom on focus: inputs must be >=16px */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
   }
   ::selection {
     background: rgba(201, 164, 138, 0.3);
     color: #fff;
+  }
+}
+
+@layer utilities {
+  /* iOS safe-area helpers */
+  .pt-safe { padding-top: env(safe-area-inset-top); }
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  .pl-safe { padding-left: env(safe-area-inset-left); }
+  .pr-safe { padding-right: env(safe-area-inset-right); }
+  .px-safe {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  /* Minimum 44px (iOS HIG) / 48px (Material) touch target */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
