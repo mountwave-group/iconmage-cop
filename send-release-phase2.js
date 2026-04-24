@@ -6,7 +6,7 @@ import 'dotenv/config'
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID
-const URL = process.env.DASHBOARD_URL || 'https://d1kgmyudtbgvxp.cloudfront.net'
+const URL = process.env.DASHBOARD_URL || 'https://icop.mountwavegroup.com/'
 
 if (!TOKEN || !CHAT_ID) {
   console.error('Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID in .env')
