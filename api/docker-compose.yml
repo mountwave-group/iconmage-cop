@@ -37,7 +37,10 @@ services:
     env_file: .env
     environment:
       DATABASE_URL: postgresql://iconimage:iconimage@postgres:5432/iconimage?schema=public
-    # Port 4000 is no longer exposed directly — traffic goes through nginx TLS proxy.
+    # Production traffic flows through nginx (443). 4000 is also published for
+    # local development tooling (Swagger UI, curl, integration tests).
+    ports:
+      - '4000:4000'
 
   nginx:
     image: nginx:1.27-alpine
@@ -51,16 +54,18 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - nginx_certs:/etc/nginx/certs
     # Generate a self-signed cert on first start if it doesn't exist yet.
-    command: >
-      sh -c "
+    command:
+      - sh
+      - -c
+      - |
         if [ ! -f /etc/nginx/certs/cert.pem ]; then
-          apk add --no-cache openssl &&
-          openssl req -x509 -nodes -days 3650 -newkey rsa:2048
-            -keyout /etc/nginx/certs/key.pem
-            -out    /etc/nginx/certs/cert.pem
+          apk add --no-cache openssl && \
+          openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+            -keyout /etc/nginx/certs/key.pem \
+            -out    /etc/nginx/certs/cert.pem \
             -subj   '/CN=iconimage-api/O=ICON IMAGE/C=MC';
-        fi &&
-        nginx -g 'daemon off;'"
+        fi && \
+        nginx -g 'daemon off;'
     restart: unless-stopped
 
 volumes:
