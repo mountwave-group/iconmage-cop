@@ -106,8 +106,14 @@ The e2e suites cover login/me, client role scoping, audit-log immutability.
 ## Deployment
 
 ```bash
+# Preferred: uses compose networking so the API can reach postgres by service name
+docker compose --profile full up --build
+
+# Standalone (postgres already running via docker compose up -d postgres):
 docker build -t iconimage-api .
-docker run --rm -p 4000:4000 --env-file .env iconimage-api
+docker run --rm -p 4000:4000 --env-file .env \
+  -e DATABASE_URL=postgresql://iconimage:iconimage@host.docker.internal:5432/iconimage?schema=public \
+  iconimage-api
 ```
 
 Use `npm run prisma:migrate:deploy` in CI to apply migrations without interactive prompts, then run the audit-trigger SQL as a one-shot.

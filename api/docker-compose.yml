@@ -35,6 +35,8 @@ services:
       postgres:
         condition: service_healthy
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql://iconimage:iconimage@postgres:5432/iconimage?schema=public
     ports:
       - '4000:4000'
 
