@@ -50,7 +50,7 @@ docker compose --profile local-s3 up -d minio
 
 | Role      | Email                          | Password             |
 |-----------|--------------------------------|----------------------|
-| OWNER     | varvara@iconimage.group        | `  `     |
+| OWNER     | varvara@iconimage.group        | `Owner!Passw0rd`     |
 | PM_LEAD   | aubry@iconimage.group          | `PmLead!Passw0rd`    |
 | PM        | nakamura@iconimage.group       | `Pm!Passw0rd`        |
 | PERFORMER | devos@iconimage.group          | `Performer!Passw0rd` |
