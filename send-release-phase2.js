@@ -14,23 +14,24 @@ if (!TOKEN || !CHAT_ID) {
 }
 
 const text = [
-  '*ICON IMAGE · Phase 2 Release*',
-  '_Operational Logic — Private Preview_',
+  '*ICON IMAGE · Phase 2*',
+  '_A quiet evening unveiling_',
   '',
-  'The dashboard now extends beyond the overview.',
+  'Varvara,',
   '',
-  '*New chambers*',
-  '• *Clients* — private registry, channel map, role-gated lifetime value',
-  '• *Projects* — seven-stage roadmap, task status, KPI per deliverable',
-  '• *Communications* — unified inbox (W · T · L · I · E), AI-drafted replies under the approval chain',
+  'The house has grown three new rooms tonight.',
   '',
-  '*Preserved*',
-  '• Louis Vuitton / Cartier restraint — editorial typography, bronze hairlines, wide margins',
-  '• No SaaS clutter, no emoji in UI, no filled status badges',
+  '*Clients* — a private registry, kept the way you keep a guest book in Monaco. Every name, every channel, every quiet history. Nothing on display that should not be.',
   '',
-  `[Enter the Platform](${URL})`,
+  '*Projects* — a seven-stage roadmap that walks beside the team rather than herding them. Tasks, KPIs, and the calm certainty that no detail is in the wrong drawer.',
   '',
-  '_Review at your convenience and reply below._',
+  '*Communications* — WhatsApp, Telegram, LinkedIn, Instagram and email gathered into one editorial inbox. AI prepares the first sentence; the approval chain decides whether the world ever reads it.',
+  '',
+  'The aesthetic remains itself — bronze hairlines, wide margins, editorial serif, no theatre. A Cartier portal, not a dashboard.',
+  '',
+  `[Step inside](${URL})`,
+  '',
+  '_Take it slowly. The platform will wait._',
 ].join('\n')
 
 const payload = JSON.stringify({
@@ -38,18 +39,6 @@ const payload = JSON.stringify({
   text,
   parse_mode: 'Markdown',
   disable_web_page_preview: false,
-  reply_markup: {
-    inline_keyboard: [
-      [
-        { text: '✓ Clients — approved', callback_data: 'p2_clients_ok' },
-        { text: '✓ Roadmap — approved', callback_data: 'p2_roadmap_ok' },
-      ],
-      [
-        { text: '✓ Inbox — approved', callback_data: 'p2_inbox_ok' },
-        { text: '✎ Request revision', callback_data: 'p2_revise' },
-      ],
-    ],
-  },
 })
 
 const req = https.request(

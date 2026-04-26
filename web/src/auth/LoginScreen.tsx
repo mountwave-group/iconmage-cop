@@ -73,9 +73,11 @@ export function LoginScreen() {
               {t('login.subtitle')}
             </p>
 
-            <label className="block mt-10">
+            <label htmlFor="login-email" className="block mt-10">
               <span className="eyebrow">{t('login.email')}</span>
               <input
+                id="login-email"
+                name="email"
                 type="email"
                 autoComplete="username"
                 inputMode="email"
@@ -86,9 +88,11 @@ export function LoginScreen() {
               />
             </label>
 
-            <label className="block mt-8">
+            <label htmlFor="login-password" className="block mt-8">
               <span className="eyebrow">{t('login.password')}</span>
               <input
+                id="login-password"
+                name="password"
                 type="password"
                 autoComplete="current-password"
                 required
