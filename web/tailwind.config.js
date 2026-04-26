@@ -5,21 +5,23 @@ export default {
     extend: {
       colors: {
         bg: {
-          base: '#0F0F0F',
-          surface: '#141414',
-          elevated: '#1A1A1A',
-          inset: '#0B0B0B',
+          base: 'var(--bg-base)',
+          surface: 'var(--bg-surface)',
+          elevated: 'var(--bg-elevated)',
+          inset: 'var(--bg-inset)',
+          // Backwards-compat alias used by a few legacy callsites.
+          primary: 'var(--bg-base)',
         },
         bronze: {
-          DEFAULT: '#C9A48A',
-          soft: 'rgba(201,164,138,0.14)',
-          line: 'rgba(201,164,138,0.25)',
-          deep: '#B07A5A',
+          DEFAULT: 'var(--bronze)',
+          soft: 'var(--bronze-soft)',
+          line: 'var(--bronze-line)',
+          deep: 'var(--bronze-deep)',
         },
         ink: {
-          primary: '#FFFFFF',
-          secondary: '#B7B7B7',
-          muted: 'rgba(255,255,255,0.45)',
+          primary: 'var(--ink-primary)',
+          secondary: 'var(--ink-secondary)',
+          muted: 'var(--ink-muted)',
         },
       },
       fontFamily: {

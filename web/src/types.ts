@@ -1,4 +1,11 @@
-export type ViewId = 'overview' | 'clients' | 'projects' | 'comms' | 'finance' | 'archive'
+export type ViewId =
+  | 'overview'
+  | 'clients'
+  | 'projects'
+  | 'comms'
+  | 'finance'
+  | 'archive'
+  | 'settings'
 
 export const VIEW_LABELS: Record<ViewId, string> = {
   overview: 'Overview',
@@ -7,4 +14,5 @@ export const VIEW_LABELS: Record<ViewId, string> = {
   comms: 'Communications',
   finance: 'Finance',
   archive: 'Archive',
+  settings: 'Settings',
 }

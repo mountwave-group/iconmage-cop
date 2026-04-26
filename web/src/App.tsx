@@ -7,6 +7,7 @@ import { OverviewView } from './views/Overview'
 import { ClientsView } from './views/Clients'
 import { ProjectsView } from './views/Projects'
 import { CommunicationsView } from './views/Communications'
+import { SettingsView } from './views/Settings'
 import type { ViewId } from './types'
 import { useI18n } from './i18n'
 import { useAuth } from './auth/AuthContext'
@@ -30,7 +31,7 @@ export default function App() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center bg-bg-primary">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-bg-base">
         <div className="eyebrow text-ink-secondary">Authenticating…</div>
       </div>
     )
@@ -55,6 +56,7 @@ export default function App() {
           {view === 'comms' && <CommunicationsView />}
           {view === 'finance' && <Placeholder titleKey="placeholder.finance.title" noteKey="placeholder.finance.note" />}
           {view === 'archive' && <Placeholder titleKey="placeholder.archive.title" noteKey="placeholder.archive.note" />}
+          {view === 'settings' && <SettingsView />}
         </main>
       </div>
       <Footer />

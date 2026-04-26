@@ -41,8 +41,18 @@ export function Sidebar({
           )
         })}
       </nav>
-      <div className="mt-16 mx-14 h-px bg-white/10" />
-      <button className="mt-6 text-left font-serif text-[15px] leading-[28px] py-2 pl-14 pr-6 text-ink-muted hover:text-ink-primary transition-colors duration-200 ease-luxe">
+      <div className="mt-16 mx-14 h-px bg-bronze-line" />
+      <button
+        onClick={() => onSelect('settings')}
+        className={`mt-6 text-left font-serif text-[15px] leading-[28px] py-2 pl-14 pr-6 transition-colors duration-200 ease-luxe ${
+          active === 'settings'
+            ? 'text-ink-primary'
+            : 'text-ink-muted hover:text-ink-primary'
+        }`}
+      >
+        {active === 'settings' && (
+          <span className="absolute left-6 h-5 w-px bg-bronze -translate-y-px" />
+        )}
         {t('nav.settings')}
       </button>
 

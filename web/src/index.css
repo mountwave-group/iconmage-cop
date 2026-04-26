@@ -2,15 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Theme tokens ────────────────────────────────────────────────────── */
+:root,
+:root[data-theme='dark'] {
+  --bg-base: #0f0f0f;
+  --bg-surface: #141414;
+  --bg-elevated: #1a1a1a;
+  --bg-inset: #0b0b0b;
+  --ink-primary: #ffffff;
+  --ink-secondary: #b7b7b7;
+  --ink-muted: rgba(255, 255, 255, 0.45);
+  --bronze: #c9a48a;
+  --bronze-soft: rgba(201, 164, 138, 0.14);
+  --bronze-line: rgba(201, 164, 138, 0.25);
+  --bronze-deep: #b07a5a;
+  --selection-ink: #ffffff;
+  --hairline: rgba(255, 255, 255, 0.1);
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --bg-base: #f4f1ec;
+  --bg-surface: #ffffff;
+  --bg-elevated: #faf7f2;
+  --bg-inset: #efeae2;
+  --ink-primary: #1a1a1a;
+  --ink-secondary: #5c5c5c;
+  --ink-muted: rgba(26, 26, 26, 0.5);
+  --bronze: #b07a5a;
+  --bronze-soft: rgba(176, 122, 90, 0.10);
+  --bronze-line: rgba(176, 122, 90, 0.30);
+  --bronze-deep: #8c5a3e;
+  --selection-ink: #1a1a1a;
+  --hairline: rgba(26, 26, 26, 0.1);
+  color-scheme: light;
+}
+
 @layer base {
   html,
   body,
   #root {
-    background: #0f0f0f;
-    color: #ffffff;
+    background: var(--bg-base);
+    color: var(--ink-primary);
     min-height: 100vh;
     /* iOS: use dynamic viewport to avoid URL-bar jumps */
     min-height: 100dvh;
+    transition: background-color 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      color 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
   html {
     -webkit-text-size-adjust: 100%;
@@ -37,8 +75,8 @@
     font-size: 16px;
   }
   ::selection {
-    background: rgba(201, 164, 138, 0.3);
-    color: #fff;
+    background: var(--bronze-soft);
+    color: var(--selection-ink);
   }
 }
 
@@ -93,7 +131,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    #c9a48a 50%,
+    var(--bronze) 50%,
     transparent 100%
   );
   transform: translateX(-100%);
@@ -105,8 +143,8 @@
 }
 .card-hover:hover {
   box-shadow:
-    0 0 0 1px #c9a48a,
-    0 0 40px rgba(201, 164, 138, 0.14);
+    0 0 0 1px var(--bronze),
+    0 0 40px var(--bronze-soft);
 }
 
 .band {

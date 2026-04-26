@@ -30,6 +30,22 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&display=swap"
     />
     <title>ICON IMAGE — Private</title>
+    <script>
+      // Apply persisted theme before React mounts to prevent flash.
+      (function () {
+        try {
+          var stored = localStorage.getItem('iconimage.theme.v1');
+          var mode = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'dark';
+          var resolved =
+            mode === 'system'
+              ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+              : mode;
+          document.documentElement.setAttribute('data-theme', resolved);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

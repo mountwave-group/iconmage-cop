@@ -4,13 +4,16 @@ import './index.css'
 import App from './App.tsx'
 import { LocaleProvider } from './i18n'
 import { AuthProvider } from './auth/AuthContext'
+import { ThemeProvider } from './theme/ThemeContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <LocaleProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </LocaleProvider>
+    <ThemeProvider>
+      <LocaleProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </LocaleProvider>
+    </ThemeProvider>
   </StrictMode>,
 )
