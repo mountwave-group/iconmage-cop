@@ -41,11 +41,17 @@ export class AuditService {
 
   writeSafe(input: AuditWriteInput): void {
     this.write(input).catch((err) => {
-      this.logger.error(`Audit write failed for ${input.action} ${input.entityType}:${input.entityId}`, err)
+      this.logger.error(
+        `Audit write failed for ${input.action} ${input.entityType}:${input.entityId}`,
+        err,
+      )
     })
   }
 
-  static diff<T extends Record<string, unknown>>(before: T, after: Partial<T>): Record<string, unknown> {
+  static diff<T extends Record<string, unknown>>(
+    before: T,
+    after: Partial<T>,
+  ): Record<string, unknown> {
     const changes: Record<string, { from: unknown; to: unknown }> = {}
     for (const key of Object.keys(after)) {
       const next = (after as Record<string, unknown>)[key]

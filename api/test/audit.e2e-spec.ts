@@ -1,6 +1,6 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import request = require('supertest')
+import request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { PrismaService } from '../src/prisma/prisma.module'
 
@@ -29,9 +29,7 @@ describe('Audit log immutability', () => {
     await expect(
       prisma.activityLog.update({ where: { id: entry.id }, data: { action: 'tampered' } }),
     ).rejects.toThrow()
-    await expect(
-      prisma.activityLog.delete({ where: { id: entry.id } }),
-    ).rejects.toThrow()
+    await expect(prisma.activityLog.delete({ where: { id: entry.id } })).rejects.toThrow()
   })
 
   it('smoke test app is reachable', async () => {

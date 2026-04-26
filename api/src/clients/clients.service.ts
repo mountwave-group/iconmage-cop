@@ -3,11 +3,7 @@ import { ClientStatus, Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.module'
 import { AuditService } from '../audit/audit.service'
 import { AuthUser } from '../common/decorators/current-user.decorator'
-import {
-  canDeleteClient,
-  canMutateClient,
-  clientScopeWhere,
-} from '../common/scoping/scope'
+import { canDeleteClient, canMutateClient, clientScopeWhere } from '../common/scoping/scope'
 import { CreateClientDto, ListClientsQueryDto, UpdateClientDto } from './dto/client.dto'
 
 @Injectable()

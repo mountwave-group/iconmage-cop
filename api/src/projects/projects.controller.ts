@@ -11,7 +11,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { Role } from '@prisma/client'
 import { ProjectsService } from './projects.service'
 import {
@@ -47,7 +54,8 @@ export class ProjectsController {
   @Roles(Role.OWNER, Role.PM_LEAD, Role.PM, Role.PERFORMER)
   @ApiOperation({
     summary: 'Get a project',
-    description: 'Returns full details of a single project. 403 is returned if the caller has no visibility.',
+    description:
+      'Returns full details of a single project. 403 is returned if the caller has no visibility.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Project UUID.' })
   @ApiResponse({ status: 200, description: 'Project object.' })
@@ -160,7 +168,8 @@ export class ProjectsController {
   @Roles(Role.OWNER, Role.PM_LEAD, Role.PM)
   @ApiOperation({
     summary: 'Add a task to a project',
-    description: 'Appends a task to the project roadmap. Tasks define assignee role, deadline, and a measurable KPI.',
+    description:
+      'Appends a task to the project roadmap. Tasks define assignee role, deadline, and a measurable KPI.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Project UUID.' })
   @ApiBody({

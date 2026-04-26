@@ -1,13 +1,12 @@
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common'
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Post,
-} from '@nestjs/common'
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { Role } from '@prisma/client'
 import { StorageService } from './storage.service'
 import { PresignUploadDto } from './dto/storage.dto'

@@ -1,15 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Tier, ClientStatus } from '@prisma/client'
 import { Type } from 'class-transformer'
-import {
-  IsEnum,
-  IsInt,
-  IsOptional,
-  IsString,
-  Length,
-  Max,
-  Min,
-} from 'class-validator'
+import { IsEnum, IsInt, IsOptional, IsString, Length, Max, Min } from 'class-validator'
 import { PartialType } from '@nestjs/swagger'
 
 export class CreateClientDto {
@@ -105,7 +97,12 @@ export class ListClientsQueryDto {
   @IsEnum(Tier)
   tier?: Tier
 
-  @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 25, description: 'Number of records to return.' })
+  @ApiPropertyOptional({
+    minimum: 1,
+    maximum: 100,
+    default: 25,
+    description: 'Number of records to return.',
+  })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -113,7 +110,11 @@ export class ListClientsQueryDto {
   @Max(100)
   take?: number = 25
 
-  @ApiPropertyOptional({ minimum: 0, default: 0, description: 'Number of records to skip (for pagination).' })
+  @ApiPropertyOptional({
+    minimum: 0,
+    default: 0,
+    description: 'Number of records to skip (for pagination).',
+  })
   @IsOptional()
   @Type(() => Number)
   @IsInt()

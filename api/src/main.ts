@@ -13,10 +13,21 @@ async function bootstrap() {
   const config = app.get<ConfigService<EnvConfig, true>>(ConfigService)
   const logger = new Logger('Bootstrap')
 
-  app.use(helmet())
+  const isHttps = config.get('NODE_ENV', { infer: true }) === 'production'
+  app.use(
+    helmet({
+      // COOP and OAC are only meaningful over HTTPS; suppress on plain HTTP to
+      // avoid browser warnings and agent-cluster inconsistency errors.
+      crossOriginOpenerPolicy: isHttps ? { policy: 'same-origin' } : false,
+      originAgentCluster: isHttps,
+    }),
+  )
   app.use(compression())
   app.enableCors({
-    origin: config.get('CORS_ORIGIN', { infer: true }).split(',').map((s) => s.trim()),
+    origin: config
+      .get('CORS_ORIGIN', { infer: true })
+      .split(',')
+      .map((s) => s.trim()),
     credentials: true,
   })
 
@@ -47,7 +58,6 @@ async function bootstrap() {
 }
 
 bootstrap().catch((err) => {
-  // eslint-disable-next-line no-console
   console.error(err)
   process.exit(1)
 })

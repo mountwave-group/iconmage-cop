@@ -9,7 +9,17 @@ Private NestJS + Prisma + PostgreSQL backend for the ICON IMAGE Corporate Operat
 - AWS S3 presigned uploads (`@aws-sdk/client-s3`)
 - class-validator DTOs, Swagger at `/docs`, `@nestjs/throttler` rate limiting
 
-## Local Setup
+## Prerequisites
+
+- **Docker ≥ 24** with the Compose plugin (`docker compose version`).  
+  If `docker compose` reports "unknown command", symlink the binary:
+  ```bash
+  sudo mkdir -p /usr/lib/docker/cli-plugins
+  sudo ln -sf /usr/local/bin/docker-compose /usr/lib/docker/cli-plugins/docker-compose
+  ```
+- Node 20 + npm (only needed for local dev without Docker).
+
+## Local Setup (dev, no TLS)
 
 ```bash
 cd api
@@ -105,11 +115,27 @@ The e2e suites cover login/me, client role scoping, audit-log immutability.
 
 ## Deployment
 
-```bash
-# Preferred: uses compose networking so the API can reach postgres by service name
-docker compose --profile full up --build
+The `full` profile starts **postgres + api + nginx**. nginx terminates TLS on port 443 and proxies to the API container; port 4000 is not exposed directly.
 
-# Standalone (postgres already running via docker compose up -d postgres):
+```bash
+cd api
+cp .env.example .env   # set JWT secrets, CORS_ORIGIN, NODE_ENV=production
+docker compose --profile full up --build
+```
+
+On first start nginx generates a **self-signed certificate** (valid 10 years) and stores it in the `nginx_certs` Docker volume. The browser will show a certificate warning — accept it for dev/staging. For production, replace the volume contents with a valid certificate or front the stack with a CDN/load-balancer that handles TLS.
+
+| Endpoint              | URL                             |
+|-----------------------|---------------------------------|
+| API (HTTPS)           | `https://<host>/`               |
+| Swagger UI            | `https://<host>/docs`           |
+| HTTP → HTTPS redirect | port 80 redirects automatically |
+
+> **Prisma binary targets** — `schema.prisma` declares `debian-openssl-3.0.x` alongside `native` so the query engine resolves correctly inside the Node 20 Bookworm-slim container.
+
+### Standalone (postgres already running)
+
+```bash
 docker build -t iconimage-api .
 docker run --rm -p 4000:4000 --env-file .env \
   -e DATABASE_URL=postgresql://iconimage:iconimage@host.docker.internal:5432/iconimage?schema=public \

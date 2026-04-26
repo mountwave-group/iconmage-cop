@@ -42,10 +42,7 @@ export class StorageService implements OnModuleInit {
       region: this.config.get('S3_REGION', { infer: true }),
       endpoint: endpoint || undefined,
       forcePathStyle: this.config.get('S3_FORCE_PATH_STYLE', { infer: true }),
-      credentials:
-        accessKeyId && secretAccessKey
-          ? { accessKeyId, secretAccessKey }
-          : undefined,
+      credentials: accessKeyId && secretAccessKey ? { accessKeyId, secretAccessKey } : undefined,
     })
     this.bucket = this.config.get('S3_BUCKET', { infer: true })
     this.maxBytes = this.config.get('STORAGE_MAX_BYTES', { infer: true })
@@ -56,7 +53,7 @@ export class StorageService implements OnModuleInit {
     if (dto.sizeBytes > this.maxBytes) {
       throw new BadRequestException(`File exceeds max size of ${this.maxBytes} bytes`)
     }
-    if (!ALLOWED_MIME_TYPES.includes(dto.contentType as typeof ALLOWED_MIME_TYPES[number])) {
+    if (!ALLOWED_MIME_TYPES.includes(dto.contentType as (typeof ALLOWED_MIME_TYPES)[number])) {
       throw new BadRequestException(`MIME type ${dto.contentType} is not permitted`)
     }
 
@@ -120,7 +117,12 @@ export class StorageService implements OnModuleInit {
       new GetObjectCommand({ Bucket: file.bucket, Key: file.storageKey }),
       { expiresIn: this.ttlSeconds },
     )
-    return { url, expiresIn: this.ttlSeconds, filename: file.filename, contentType: file.contentType }
+    return {
+      url,
+      expiresIn: this.ttlSeconds,
+      filename: file.filename,
+      contentType: file.contentType,
+    }
   }
 
   async remove(actor: AuthUser, fileObjectId: string) {

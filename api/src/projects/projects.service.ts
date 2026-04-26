@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { Prisma, Role } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.module'
 import { AuditService } from '../audit/audit.service'
@@ -62,7 +58,11 @@ export class ProjectsService {
     return { project, tasks }
   }
 
-  private assertCanMutateProject(actor: AuthUser, pmId: string | null, clientAssignedPmId: string | null) {
+  private assertCanMutateProject(
+    actor: AuthUser,
+    pmId: string | null,
+    clientAssignedPmId: string | null,
+  ) {
     if (actor.role === Role.OWNER || actor.role === Role.PM_LEAD) return
     if (actor.role === Role.PM && (pmId === actor.id || clientAssignedPmId === actor.id)) return
     throw new ForbiddenException('You may not mutate this project')
@@ -110,10 +110,12 @@ export class ProjectsService {
     this.assertCanMutateProject(
       actor,
       existing.pmId,
-      (await this.prisma.client.findUnique({
-        where: { id: existing.clientId },
-        select: { assignedPmId: true },
-      }))?.assignedPmId ?? null,
+      (
+        await this.prisma.client.findUnique({
+          where: { id: existing.clientId },
+          select: { assignedPmId: true },
+        })
+      )?.assignedPmId ?? null,
     )
 
     return this.prisma.$transaction(async (tx) => {
@@ -230,7 +232,5 @@ export class ProjectsService {
 }
 
 function serialize(value: unknown): Record<string, unknown> {
-  return JSON.parse(
-    JSON.stringify(value, (_key, v) => (typeof v === 'bigint' ? v.toString() : v)),
-  )
+  return JSON.parse(JSON.stringify(value, (_key, v) => (typeof v === 'bigint' ? v.toString() : v)))
 }

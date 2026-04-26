@@ -11,7 +11,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { Role } from '@prisma/client'
 import { ClientsService } from './clients.service'
 import { CreateClientDto, ListClientsQueryDto, UpdateClientDto } from './dto/client.dto'
@@ -42,7 +49,8 @@ export class ClientsController {
   @Roles(Role.OWNER, Role.PM_LEAD, Role.PM, Role.PERFORMER)
   @ApiOperation({
     summary: 'Get a client',
-    description: 'Returns full details of a single client. Access is scoped by role — see list endpoint for visibility rules.',
+    description:
+      'Returns full details of a single client. Access is scoped by role — see list endpoint for visibility rules.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Client UUID.' })
   @ApiResponse({ status: 200, description: 'Client object.' })
@@ -56,7 +64,8 @@ export class ClientsController {
   @Roles(Role.OWNER, Role.PM_LEAD)
   @ApiOperation({
     summary: 'Create a client',
-    description: 'Creates a new client record and writes an audit log entry. Restricted to OWNER and PM_LEAD.',
+    description:
+      'Creates a new client record and writes an audit log entry. Restricted to OWNER and PM_LEAD.',
   })
   @ApiBody({
     type: CreateClientDto,
@@ -96,7 +105,8 @@ export class ClientsController {
   @Roles(Role.OWNER, Role.PM_LEAD)
   @ApiOperation({
     summary: 'Update a client',
-    description: 'Partial update of any client field. All fields are optional; only supplied fields are modified.',
+    description:
+      'Partial update of any client field. All fields are optional; only supplied fields are modified.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Client UUID.' })
   @ApiBody({
@@ -127,7 +137,8 @@ export class ClientsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Archive a client',
-    description: 'Soft-deletes the client by setting status to ARCHIVED. No data is destroyed. Restricted to OWNER.',
+    description:
+      'Soft-deletes the client by setting status to ARCHIVED. No data is destroyed. Restricted to OWNER.',
   })
   @ApiParam({ name: 'id', type: 'string', format: 'uuid', description: 'Client UUID.' })
   @ApiResponse({ status: 200, description: 'Archived client object.' })
