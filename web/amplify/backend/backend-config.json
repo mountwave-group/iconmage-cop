@@ -4,5 +4,15 @@
       "providerPlugin": "awscloudformation",
       "service": "S3AndCloudFront"
     }
+  },
+  "parameters": {
+    "AMPLIFY_hosting_S3AndCloudFront_bucketName": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "S3AndCloudFront"
+        }
+      ]
+    }
   }
 }

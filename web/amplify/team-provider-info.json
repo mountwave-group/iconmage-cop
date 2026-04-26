@@ -13,7 +13,9 @@
     },
     "categories": {
       "hosting": {
-        "S3AndCloudFront": {}
+        "S3AndCloudFront": {
+          "bucketName": "icopweb-20260424135411-hostingbucket"
+        }
       }
     }
   }
