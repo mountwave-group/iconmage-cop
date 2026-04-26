@@ -21,4 +21,6 @@ COPY --from=build /app/dist ${LAMBDA_TASK_ROOT}/dist
 COPY --from=build /app/prisma ${LAMBDA_TASK_ROOT}/prisma
 COPY --from=build /app/package*.json ${LAMBDA_TASK_ROOT}/
 # Lambda RIC ENTRYPOINT is set by the base image. CMD = module.exportedHandler.
-CMD ["dist/lambda.handler"]
+# src/ compiles to dist/src/ because tsconfig.build.json includes prisma/seed.ts
+# (outside src/), so TypeScript auto-roots at project root rather than src/.
+CMD ["dist/src/lambda.handler"]
