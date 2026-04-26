@@ -3,12 +3,11 @@
 Private NestJS + Prisma + PostgreSQL backend for the ICON IMAGE Corporate Operating Platform.
 
 ## Stack
-- Node 20, NestJS 11, TypeScript 5.7 strict mode
-- Prisma 6 · PostgreSQL 16
+- Node 20, NestJS 10, TypeScript strict mode
+- Prisma 5 · PostgreSQL 16
 - Passport JWT (15 min access / 7 d refresh, bcrypt 12 rounds)
 - AWS S3 presigned uploads (`@aws-sdk/client-s3`)
 - class-validator DTOs, Swagger at `/docs`, `@nestjs/throttler` rate limiting
-- ESLint 9 (flat config) + Prettier 3
 
 ## Prerequisites
 

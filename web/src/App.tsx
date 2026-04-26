@@ -9,8 +9,11 @@ import { ProjectsView } from './views/Projects'
 import { CommunicationsView } from './views/Communications'
 import type { ViewId } from './types'
 import { useI18n } from './i18n'
+import { useAuth } from './auth/AuthContext'
+import { LoginScreen } from './auth/LoginScreen'
 
 export default function App() {
+  const { status } = useAuth()
   const [view, setView] = useState<ViewId>('overview')
   const [focusClient, setFocusClient] = useState<string | null>(null)
 
@@ -23,6 +26,18 @@ export default function App() {
   const openProjectsForClient = (name: string) => {
     setFocusClient(name)
     setView('projects')
+  }
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-[100dvh] flex items-center justify-center bg-bg-primary">
+        <div className="eyebrow text-ink-secondary">Authenticating…</div>
+      </div>
+    )
+  }
+
+  if (status === 'unauthenticated') {
+    return <LoginScreen />
   }
 
   return (
