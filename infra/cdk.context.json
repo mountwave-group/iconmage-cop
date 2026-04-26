@@ -1,0 +1,32 @@
+{
+  "vpc-provider:account=585008043730:filter.vpc-id=vpc-08bf14adedd4a07ef:region=eu-west-2:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-08bf14adedd4a07ef",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "ownerAccountId": "585008043730",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-04479472a34229300",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "eu-west-2a",
+            "routeTableId": "rtb-0edf07c9aaa405ad6"
+          },
+          {
+            "subnetId": "subnet-0453e99da40176765",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "eu-west-2b",
+            "routeTableId": "rtb-0b95c0bf922a2122f"
+          }
+        ]
+      }
+    ]
+  },
+  "hosted-zone:account=585008043730:domainName=mountwavegroup.com:region=eu-west-2": {
+    "Id": "/hostedzone/Z0141057148SMA9OEGOTW",
+    "Name": "mountwavegroup.com."
+  }
+}

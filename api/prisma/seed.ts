@@ -2,7 +2,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 import { PrismaClient, Role, Tier, ServiceCategory, ProjectStatus, TaskStatus } from '@prisma/client'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
 

@@ -9,16 +9,16 @@ COPY src ./src
 RUN npx prisma generate && npm run build && npm prune --production
 
 # --- runtime stage ---
-FROM node:20-bookworm-slim AS runtime
-WORKDIR /app
+# AWS Lambda Node.js 20 base image includes the Lambda Runtime Interface Client
+# (RIC) and is based on Amazon Linux 2023. The same image is used for ECS
+# migration tasks — the task definition overrides ENTRYPOINT to /bin/sh.
+FROM public.ecr.aws/lambda/nodejs:20
 ENV NODE_ENV=production
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
-  && rm -rf /var/lib/apt/lists/* \
-  && useradd --system --uid 1001 --home /app --shell /usr/sbin/nologin nodeapp
-COPY --from=build --chown=nodeapp:nodeapp /app/node_modules ./node_modules
-COPY --from=build --chown=nodeapp:nodeapp /app/dist ./dist
-COPY --from=build --chown=nodeapp:nodeapp /app/prisma ./prisma
-COPY --from=build --chown=nodeapp:nodeapp /app/package*.json ./
-USER nodeapp
-EXPOSE 4000
-CMD ["node", "dist/main.js"]
+# Prisma query engine requires openssl (AL2023 uses dnf)
+RUN dnf install -y openssl && dnf clean all
+COPY --from=build /app/node_modules ${LAMBDA_TASK_ROOT}/node_modules
+COPY --from=build /app/dist ${LAMBDA_TASK_ROOT}/dist
+COPY --from=build /app/prisma ${LAMBDA_TASK_ROOT}/prisma
+COPY --from=build /app/package*.json ${LAMBDA_TASK_ROOT}/
+# Lambda RIC ENTRYPOINT is set by the base image. CMD = module.exportedHandler.
+CMD ["dist/lambda.handler"]

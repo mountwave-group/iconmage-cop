@@ -1,0 +1,33 @@
+{
+  "name": "@iconimage/infra",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ICON IMAGE Corporate Operating Platform — AWS CDK infrastructure",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch",
+    "synth": "cdk synth",
+    "diff": "cdk diff",
+    "deploy": "cdk deploy --all --require-approval never",
+    "deploy:network": "cdk deploy NetworkStack --require-approval never",
+    "deploy:data": "cdk deploy DataStack --require-approval never",
+    "deploy:postgres": "cdk deploy PostgresStack --require-approval never",
+    "deploy:api": "cdk deploy ApiStack --require-approval never",
+    "destroy": "cdk destroy --all",
+    "lint": "eslint \"{bin,lib,scripts}/**/*.ts\" --fix",
+    "format": "prettier --write \"{bin,lib,scripts}/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "aws-cdk": "^2.166.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.166.0",
+    "cdk-nag": "^2.34.0",
+    "constructs": "^10.4.2",
+    "source-map-support": "^0.5.21"
+  }
+}
