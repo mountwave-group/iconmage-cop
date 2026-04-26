@@ -35,8 +35,8 @@ describe('Audit log immutability', () => {
   })
 
   it('smoke test app is reachable', async () => {
-    await request(app.getHttpServer()).get('/docs').expect((res: request.Response) => {
-      expect([200, 301, 302]).toContain(res.status)
-    })
+    const res = await request(app.getHttpServer()).post('/auth/login').send({})
+    // 400 = validation error means the app is up and routing correctly
+    expect([200, 201, 400, 401]).toContain(res.status)
   })
 })
