@@ -109,7 +109,9 @@ PERM_DOC=$(cat <<JSON
       "Effect": "Allow",
       "Action": "iam:PassRole",
       "Resource": [
-        "arn:aws:iam::${AWS_ACCOUNT_ID}:role/iconimage-*"
+        "arn:aws:iam::${AWS_ACCOUNT_ID}:role/iconimage-*",
+        "arn:aws:iam::${AWS_ACCOUNT_ID}:role/MigrationStack-*",
+        "arn:aws:iam::${AWS_ACCOUNT_ID}:role/ApiStack-*"
       ],
       "Condition": {
         "StringEquals": { "iam:PassedToService": [ "ecs-tasks.amazonaws.com", "lambda.amazonaws.com" ] }
