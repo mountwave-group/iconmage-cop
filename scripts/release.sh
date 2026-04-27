@@ -7,8 +7,17 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$SCRIPT_DIR"
+# Resolve project root: if script lives in <root>/scripts, climb one level.
+if [ "$(basename "$SCRIPT_DIR")" = "scripts" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+else
+  PROJECT_ROOT="$SCRIPT_DIR"
+fi
 WEB_DIR="$PROJECT_ROOT/web"
+
+# CI=1 (set automatically by GitHub Actions) skips interactive amplify env
+# checkout and reads Telegram creds from the environment instead of .env.
+CI_MODE="${CI:-0}"
 
 BLUE='\033[0;34m'; GREEN='\033[0;32m'; RED='\033[0;31m'; YELLOW='\033[1;33m'; NC='\033[0m'
 
@@ -20,13 +29,23 @@ log_info()    { echo -e "${BLUE}ℹ️  $1${NC}"; }
 
 # ── Step 1: env ─────────────────────────────────────────────────────────────
 log_header "Step 1 · Environment"
-if [ ! -f "$PROJECT_ROOT/.env" ]; then
-  log_error ".env missing — copy from .env.example"
-  exit 1
+SKIP_ANNOUNCE="${SKIP_ANNOUNCE:-0}"
+if [ "$CI_MODE" = "1" ] || [ "$CI_MODE" = "true" ]; then
+  log_info "CI mode — reading Telegram creds from environment"
+else
+  if [ ! -f "$PROJECT_ROOT/.env" ]; then
+    log_error ".env missing — copy from .env.example"
+    exit 1
+  fi
+  set -a
+  # shellcheck disable=SC1091
+  source "$PROJECT_ROOT/.env"
+  set +a
 fi
-export $(grep -v '^#' "$PROJECT_ROOT/.env" | xargs)
-: "${TELEGRAM_BOT_TOKEN:?TELEGRAM_BOT_TOKEN not set}"
-: "${TELEGRAM_CHAT_ID:?TELEGRAM_CHAT_ID not set}"
+if [ "$SKIP_ANNOUNCE" != "1" ]; then
+  : "${TELEGRAM_BOT_TOKEN:?TELEGRAM_BOT_TOKEN not set (or set SKIP_ANNOUNCE=1)}"
+  : "${TELEGRAM_CHAT_ID:?TELEGRAM_CHAT_ID not set (or set SKIP_ANNOUNCE=1)}"
+fi
 log_success "Environment verified"
 
 # ── Step 2: build ───────────────────────────────────────────────────────────
@@ -50,9 +69,14 @@ if [ ! -d "$WEB_DIR/amplify" ]; then
   exit 1
 fi
 
-# Ensure we are on the 'dev' env (non-interactive). Falls back silently if already checked out.
-log_info "Ensuring Amplify env 'dev' is active"
-amplify env checkout dev 2>/dev/null || log_warn "Could not auto-checkout 'dev' (may already be active)"
+# Ensure we are on the 'dev' env (non-interactive). Skipped in CI — the workflow
+# runs `amplify pull --envName dev --yes` before invoking this script.
+if [ "$CI_MODE" = "1" ] || [ "$CI_MODE" = "true" ]; then
+  log_info "CI mode — skipping amplify env checkout"
+else
+  log_info "Ensuring Amplify env 'dev' is active"
+  amplify env checkout dev 2>/dev/null || log_warn "Could not auto-checkout 'dev' (may already be active)"
+fi
 
 # Publish. --yes answers prompts; --invalidateCloudFront forces CDN bust.
 log_info "Publishing to Amplify hosting…"
@@ -98,8 +122,12 @@ fi
 # ── Step 4: announce ────────────────────────────────────────────────────────
 log_header "Step 4 · Telegram Phase 2 Announcement"
 cd "$PROJECT_ROOT"
-node "$PROJECT_ROOT/send-release-phase2.js"
-log_success "Announcement sent"
+if [ "$SKIP_ANNOUNCE" = "1" ]; then
+  log_warn "SKIP_ANNOUNCE=1 — skipping Telegram announcement"
+else
+  node "$PROJECT_ROOT/send-release-phase2.js"
+  log_success "Announcement sent"
+fi
 
 # ── Step 5: summary ─────────────────────────────────────────────────────────
 log_header "Phase 2 Release Complete"

@@ -178,6 +178,19 @@ PERM_DOC=$(cat <<JSON
       "Effect": "Allow",
       "Action": "sts:AssumeRole",
       "Resource": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/cdk-*"
+    },
+    {
+      "Sid": "AmplifyHosting",
+      "Effect": "Allow",
+      "Action": [
+        "amplify:GetApp",
+        "amplify:GetBackendEnvironment",
+        "amplify:ListBackendEnvironments",
+        "amplify:ListApps",
+        "amplify:ListBranches",
+        "amplify:UpdateApp"
+      ],
+      "Resource": "*"
     }
   ]
 }
