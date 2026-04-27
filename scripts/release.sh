@@ -59,14 +59,16 @@ log_success "Built · $(du -sh "$WEB_DIR/dist" | cut -f1)"
 log_header "Step 3 · Amplify Deploy"
 cd "$WEB_DIR"
 
-if ! command -v amplify >/dev/null 2>&1; then
-  log_error "Amplify CLI not found. Install: npm i -g @aws-amplify/cli"
-  exit 1
-fi
+if [ "$CI_MODE" != "1" ] && [ "$CI_MODE" != "true" ]; then
+  if ! command -v amplify >/dev/null 2>&1; then
+    log_error "Amplify CLI not found. Install: npm i -g @aws-amplify/cli"
+    exit 1
+  fi
 
-if [ ! -d "$WEB_DIR/amplify" ]; then
-  log_error "No amplify/ directory in $WEB_DIR — run 'amplify init' first"
-  exit 1
+  if [ ! -d "$WEB_DIR/amplify" ]; then
+    log_error "No amplify/ directory in $WEB_DIR — run 'amplify init' first"
+    exit 1
+  fi
 fi
 
 # Ensure we are on the 'dev' env (non-interactive). Skipped in CI — the workflow
