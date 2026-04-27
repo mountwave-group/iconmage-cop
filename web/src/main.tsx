@@ -5,13 +5,16 @@ import App from './App.tsx'
 import { LocaleProvider } from './i18n'
 import { AuthProvider } from './auth/AuthContext'
 import { ThemeProvider } from './theme/ThemeContext'
+import { ToastProvider } from './components/ui/Toast'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
       <LocaleProvider>
         <AuthProvider>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </AuthProvider>
       </LocaleProvider>
     </ThemeProvider>

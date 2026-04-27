@@ -8,6 +8,8 @@ export default {
           base: 'var(--bg-base)',
           surface: 'var(--bg-surface)',
           elevated: 'var(--bg-elevated)',
+          overlay: 'var(--bg-overlay)',
+          glass: 'var(--bg-glass)',
           inset: 'var(--bg-inset)',
           // Backwards-compat alias used by a few legacy callsites.
           primary: 'var(--bg-base)',
@@ -18,11 +20,38 @@ export default {
           line: 'var(--bronze-line)',
           deep: 'var(--bronze-deep)',
         },
+        accent: {
+          DEFAULT: 'var(--accent)',
+          dim: 'var(--accent-dim)',
+        },
+        border: {
+          DEFAULT: 'var(--border-default)',
+          dim: 'var(--border-dim)',
+          accent: 'var(--border-accent)',
+        },
+        status: {
+          active: 'var(--status-active)',
+          complete: 'var(--status-complete)',
+          pending: 'var(--status-pending)',
+          critical: 'var(--status-critical)',
+        },
         ink: {
           primary: 'var(--ink-primary)',
           secondary: 'var(--ink-secondary)',
           muted: 'var(--ink-muted)',
         },
+      },
+      boxShadow: {
+        l1: '0 1px 4px rgba(0,0,0,0.4)',
+        l2: '0 4px 16px rgba(0,0,0,0.5)',
+        l3: '0 8px 32px rgba(0,0,0,0.6)',
+        glow: '0 0 24px rgba(201,164,138,0.18)',
+      },
+      transitionTimingFunction: {
+        luxe: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+        decel: 'cubic-bezier(0, 0, 0.2, 1)',
+        accel: 'cubic-bezier(0.4, 0, 1, 1)',
+        std: 'cubic-bezier(0.4, 0, 0.2, 1)',
       },
       fontFamily: {
         serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],

@@ -8,8 +8,22 @@ import { request, ApiError } from './client'
 
 export type Role = 'OWNER' | 'PM_LEAD' | 'PM' | 'PERFORMER' | 'CLIENT'
 
-export type ClientStatus = 'ACTIVE' | 'PROSPECT' | 'ARCHIVED'
+export type ClientStatus = 'LEAD' | 'ACTIVE' | 'DORMANT' | 'ARCHIVED'
 export type ClientTier = 'PRIVATE' | 'CORPORATE' | 'VIP'
+export type ServiceCategory =
+  | 'CONSULTING'
+  | 'DIGITAL'
+  | 'BRANDING'
+  | 'CONTENT'
+  | 'PR'
+  | 'VIP'
+export type ProjectStatus =
+  | 'IN_MOTION'
+  | 'AWAITING_APPROVAL'
+  | 'ON_HOLD'
+  | 'DELIVERED'
+export type TaskStatus = 'PENDING' | 'IN_PROGRESS' | 'BLOCKED' | 'COMPLETE'
+export type FileVisibility = 'OWNER' | 'PM' | 'PERFORMER' | 'CLIENT'
 
 export interface ClientResource {
   id: string
@@ -102,4 +116,134 @@ export interface ProjectsListResponse {
 
 export function useProjects() {
   return useResource<ProjectsListResponse>('/projects')
+}
+
+export function useProject(id: string | null) {
+  return useResource<ProjectResource>(id ? `/projects/${id}` : null)
+}
+
+// ── Tasks ─────────────────────────────────────────────────────────────────
+
+export interface TaskResource {
+  id: string
+  projectId: string
+  title: string
+  assigneeRole: Role
+  status: TaskStatus
+  dueAt: string | null
+  kpi: number | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface RoadmapResponse {
+  project: ProjectResource
+  tasks: TaskResource[]
+}
+
+export function useProjectRoadmap(projectId: string | null) {
+  return useResource<RoadmapResponse>(projectId ? `/projects/${projectId}/roadmap` : null)
+}
+
+// ── Files ─────────────────────────────────────────────────────────────────
+// NB: The API exposes presign / download / delete only. There is no list
+// endpoint yet, so `useFiles` is intentionally absent. Files surface in the
+// UI through their parent client/project records.
+
+export interface FileObjectResource {
+  id: string
+  filename: string
+  contentType: string
+  sizeBytes: string // BigInt
+  visibility: FileVisibility
+  clientId: string | null
+  projectId: string | null
+  uploadedById: string
+  createdAt: string
+}
+
+// ── Mutation helpers (imperative) ─────────────────────────────────────────
+
+export interface CreateClientInput {
+  name: string
+  country: string
+  tier: ClientTier
+  status?: ClientStatus
+  primaryContact: string
+  contactTitle?: string
+  currency?: string
+  notes?: string
+  assignedPmId?: string | null
+}
+export type UpdateClientInput = Partial<CreateClientInput>
+
+export const clientsApi = {
+  create: (body: CreateClientInput) =>
+    request<ClientResource>('/clients', { method: 'POST', body }),
+  update: (id: string, body: UpdateClientInput) =>
+    request<ClientResource>(`/clients/${id}`, { method: 'PATCH', body }),
+  archive: (id: string) =>
+    request<ClientResource>(`/clients/${id}`, { method: 'DELETE' }),
+}
+
+export interface CreateProjectInput {
+  clientId: string
+  serviceCategory: ServiceCategory
+  serviceName: string
+  status?: ProjectStatus
+  stageCurrent?: number
+  stageTotal?: number
+  dueAt?: string | null
+  budgetCents?: number | null
+  currency?: string
+  pmId?: string | null
+}
+export type UpdateProjectInput = Partial<CreateProjectInput>
+
+export const projectsApi = {
+  create: (body: CreateProjectInput) =>
+    request<ProjectResource>('/projects', { method: 'POST', body }),
+  update: (id: string, body: UpdateProjectInput) =>
+    request<ProjectResource>(`/projects/${id}`, { method: 'PATCH', body }),
+  remove: (id: string) =>
+    request<void>(`/projects/${id}`, { method: 'DELETE' }),
+}
+
+export interface CreateTaskInput {
+  title: string
+  assigneeRole: Role
+  status?: TaskStatus
+  dueAt?: string | null
+  kpi?: number | null
+}
+export type UpdateTaskInput = Partial<CreateTaskInput>
+
+export const tasksApi = {
+  create: (projectId: string, body: CreateTaskInput) =>
+    request<TaskResource>(`/projects/${projectId}/tasks`, { method: 'POST', body }),
+  update: (projectId: string, taskId: string, body: UpdateTaskInput) =>
+    request<TaskResource>(`/projects/${projectId}/tasks/${taskId}`, { method: 'PATCH', body }),
+}
+
+export interface PresignUploadInput {
+  filename: string
+  contentType: string
+  sizeBytes: number
+  clientId?: string
+  projectId?: string
+  visibility?: FileVisibility
+}
+export interface PresignUploadResponse {
+  id: string
+  uploadUrl: string
+  expiresAt: string
+}
+
+export const storageApi = {
+  presignUpload: (body: PresignUploadInput) =>
+    request<PresignUploadResponse>('/storage/presign-upload', { method: 'POST', body }),
+  download: (fileId: string) =>
+    request<{ downloadUrl: string; expiresAt: string }>(`/storage/${fileId}/download`),
+  remove: (fileId: string) =>
+    request<FileObjectResource>(`/storage/${fileId}`, { method: 'DELETE' }),
 }
