@@ -56,32 +56,10 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           audience: sts.amazonaws.com
 
-      - name: Install Amplify CLI
-        run: npm i -g @aws-amplify/cli@latest
-
-      - name: Pull Amplify backend (non-interactive)
-        working-directory: web
-        env:
-          AMPLIFY_APP_ID: ${{ env.AMPLIFY_APP_ID }}
-          AMPLIFY_ENV: ${{ env.AMPLIFY_ENV }}
-          AWS_REGION: ${{ env.AWS_REGION }}
-        run: |
-          AMPLIFY_INIT=$(jq -nc \
-            --arg appId "$AMPLIFY_APP_ID" \
-            --arg envName "$AMPLIFY_ENV" \
-            '{appId:$appId, envName:$envName, defaultEditor:"code"}')
-          AMPLIFY_PROVIDERS=$(jq -nc \
-            --arg region "$AWS_REGION" \
-            '{awscloudformation:{configLevel:"project",useProfile:false,region:$region}}')
-          amplify pull \
-            --amplify "$AMPLIFY_INIT" \
-            --providers "$AMPLIFY_PROVIDERS" \
-            --frontend '{"frontend":"javascript","framework":"react","config":{"SourceDir":"src","DistributionDir":"dist","BuildCommand":"npm run build","StartCommand":"npm run dev"}}' \
-            --yes
-
       - name: Run release.sh
         env:
           CI: 'true'
+          HOSTING_BUCKET: icopweb-20260424135411-hostingbucket
           CF_DISTRIBUTION_ID: ${{ env.CF_DISTRIBUTION_ID }}
           SKIP_ANNOUNCE: ${{ github.event_name == 'workflow_dispatch' && inputs.skip-announce || '1' }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

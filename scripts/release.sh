@@ -78,22 +78,31 @@ else
   amplify env checkout dev 2>/dev/null || log_warn "Could not auto-checkout 'dev' (may already be active)"
 fi
 
-# Publish. --yes answers prompts; --invalidateCloudFront forces CDN bust.
-log_info "Publishing to Amplify hosting…"
-set +e
-amplify publish --yes --invalidateCloudFront
-AMPLIFY_EXIT=$?
-set -e
+# Publish. In CI we bypass the Amplify CLI (notoriously brittle in headless
+# runners) and sync the build directly to the hosting S3 bucket. This is
+# functionally what `amplify publish` does for the S3AndCloudFront category.
+if [ "$CI_MODE" = "1" ] || [ "$CI_MODE" = "true" ]; then
+  HOSTING_BUCKET="${HOSTING_BUCKET:-icopweb-20260424135411-hostingbucket}"
+  log_info "CI mode — syncing dist/ → s3://$HOSTING_BUCKET"
+  aws s3 sync "$WEB_DIR/dist/" "s3://$HOSTING_BUCKET/" --delete
+  log_success "Deployed (S3 sync)"
+else
+  log_info "Publishing to Amplify hosting…"
+  set +e
+  amplify publish --yes --invalidateCloudFront
+  AMPLIFY_EXIT=$?
+  set -e
 
-if [ $AMPLIFY_EXIT -ne 0 ]; then
-  log_error "amplify publish failed (exit $AMPLIFY_EXIT)"
-  log_warn  "Common causes:"
-  echo     "  · DNS failure → try: sudo dscacheutil -flushcache; switch to 1.1.1.1"
-  echo     "  · AWS creds expired → amplify configure"
-  echo     "  · Env not pulled → amplify pull --envName dev"
-  exit $AMPLIFY_EXIT
+  if [ $AMPLIFY_EXIT -ne 0 ]; then
+    log_error "amplify publish failed (exit $AMPLIFY_EXIT)"
+    log_warn  "Common causes:"
+    echo     "  · DNS failure → try: sudo dscacheutil -flushcache; switch to 1.1.1.1"
+    echo     "  · AWS creds expired → amplify configure"
+    echo     "  · Env not pulled → amplify pull --envName dev"
+    exit $AMPLIFY_EXIT
+  fi
+  log_success "Deployed"
 fi
-log_success "Deployed"
 
 # ── Step 3b: CloudFront cache invalidation ──────────────────────────────────
 log_header "Step 3b · CloudFront Invalidation"
