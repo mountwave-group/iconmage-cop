@@ -59,7 +59,7 @@ jobs:
       - name: Run release.sh
         env:
           CI: 'true'
-          HOSTING_BUCKET: icopweb-20260424135411-hostingbucket
+          HOSTING_BUCKET: icopweb-20260424135411-hostingbucket-dev
           CF_DISTRIBUTION_ID: ${{ env.CF_DISTRIBUTION_ID }}
           SKIP_ANNOUNCE: ${{ github.event_name == 'workflow_dispatch' && inputs.skip-announce || '1' }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
