@@ -1,4 +1,9 @@
 import 'reflect-metadata'
+// Global BigInt JSON serializer — Prisma returns BigInt for `@db.BigInt`
+// columns (e.g. Project.budgetCents, FileObject.sizeBytes); stringify them as
+// decimal strings instead of throwing.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+;(BigInt.prototype as any).toJSON = function () { return this.toString() }
 import { NestFactory, Reflector } from '@nestjs/core'
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common'
 import { ExpressAdapter } from '@nestjs/platform-express'

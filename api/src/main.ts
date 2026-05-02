@@ -1,4 +1,6 @@
 import 'reflect-metadata'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+;(BigInt.prototype as any).toJSON = function () { return this.toString() }
 import { NestFactory, Reflector } from '@nestjs/core'
 import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'

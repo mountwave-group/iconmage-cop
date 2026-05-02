@@ -59,67 +59,71 @@ async function main() {
     },
   })
 
-  const client = await prisma.client.upsert({
-    where: { id: '00000000-0000-0000-0000-000000000001' },
-    update: {},
-    create: {
-      id: '00000000-0000-0000-0000-000000000001',
-      name: 'Maison Arielle',
-      country: 'FRANCE',
-      tier: Tier.PRIVATE,
-      primaryContact: 'Arielle Laurent',
-      contactTitle: 'FOUNDER',
-      currency: 'EUR',
-      notes: 'Founder-led haute perfumerie. Prefers morning calls.',
-      assignedPmId: pm.id,
-    },
-  })
+  // Idempotent upsert keyed on name to avoid re-introducing non-RFC-4122
+  // hardcoded UUIDs (those fail class-validator's IsUUID).
+  const existingClient = await prisma.client.findFirst({ where: { name: 'Maison Arielle' } })
+  const client = existingClient
+    ? await prisma.client.update({ where: { id: existingClient.id }, data: { assignedPmId: pm.id } })
+    : await prisma.client.create({
+        data: {
+          name: 'Maison Arielle',
+          country: 'FRANCE',
+          tier: Tier.PRIVATE,
+          primaryContact: 'Arielle Laurent',
+          contactTitle: 'FOUNDER',
+          currency: 'EUR',
+          notes: 'Founder-led haute perfumerie. Prefers morning calls.',
+          assignedPmId: pm.id,
+        },
+      })
 
-  const project = await prisma.project.upsert({
-    where: { id: '00000000-0000-0000-0000-000000000101' },
-    update: {},
-    create: {
-      id: '00000000-0000-0000-0000-000000000101',
-      clientId: client.id,
-      serviceCategory: ServiceCategory.BRANDING,
-      serviceName: 'BRANDING · CORPORATE IDENTITY',
-      status: ProjectStatus.IN_MOTION,
-      stageCurrent: 3,
-      stageTotal: 7,
-      dueAt: new Date('2026-05-12T00:00:00Z'),
-      budgetCents: BigInt(4800000),
-      currency: 'EUR',
-      pmId: pm.id,
-      members: {
-        create: [{ userId: performer.id, roleOnProject: Role.PERFORMER }],
-      },
-      tasks: {
-        create: [
-          {
-            title: 'Brand audit & competitive benchmark',
-            assigneeRole: Role.PERFORMER,
-            status: TaskStatus.COMPLETE,
-            dueAt: new Date('2026-04-02T00:00:00Z'),
-            kpi: 'Delivered',
-          },
-          {
-            title: 'Primary wordmark — first round',
-            assigneeRole: Role.PERFORMER,
-            status: TaskStatus.IN_PROGRESS,
-            dueAt: new Date('2026-04-24T00:00:00Z'),
-            kpi: '2 concepts',
-          },
-          {
-            title: 'Final delivery & handover',
-            assigneeRole: Role.PM,
-            status: TaskStatus.PENDING,
-            dueAt: new Date('2026-05-12T00:00:00Z'),
-            kpi: 'Signed',
-          },
-        ],
-      },
-    },
+  const existingProject = await prisma.project.findFirst({
+    where: { clientId: client.id, serviceName: 'BRANDING · CORPORATE IDENTITY' },
   })
+  const project = existingProject
+    ? existingProject
+    : await prisma.project.create({
+        data: {
+          clientId: client.id,
+          serviceCategory: ServiceCategory.BRANDING,
+          serviceName: 'BRANDING · CORPORATE IDENTITY',
+          status: ProjectStatus.IN_MOTION,
+          stageCurrent: 3,
+          stageTotal: 7,
+          dueAt: new Date('2026-05-12T00:00:00Z'),
+          budgetCents: BigInt(4800000),
+          currency: 'EUR',
+          pmId: pm.id,
+          members: {
+            create: [{ userId: performer.id, roleOnProject: Role.PERFORMER }],
+          },
+          tasks: {
+            create: [
+              {
+                title: 'Brand audit & competitive benchmark',
+                assigneeRole: Role.PERFORMER,
+                status: TaskStatus.COMPLETE,
+                dueAt: new Date('2026-04-02T00:00:00Z'),
+                kpi: 'Delivered',
+              },
+              {
+                title: 'Primary wordmark — first round',
+                assigneeRole: Role.PERFORMER,
+                status: TaskStatus.IN_PROGRESS,
+                dueAt: new Date('2026-04-24T00:00:00Z'),
+                kpi: '2 concepts',
+              },
+              {
+                title: 'Final delivery & handover',
+                assigneeRole: Role.PM,
+                status: TaskStatus.PENDING,
+                dueAt: new Date('2026-05-12T00:00:00Z'),
+                kpi: 'Signed',
+              },
+            ],
+          },
+        },
+      })
 
   console.log('Seed complete.')
   console.log({ owner: owner.email, pmLead: pmLead.email, pm: pm.email, performer: performer.email })
