@@ -1,0 +1,15 @@
+{
+	"servers": {
+		"Azure AI Foundry MCP Server": {
+			"type": "stdio",
+			"command": "uvx",
+			"args": [
+				"--prerelease=allow",
+				"--from",
+				"git+https://github.com/azure-ai-foundry/mcp-foundry.git",
+				"run-azure-ai-foundry-mcp"
+			]
+		}
+	},
+	"inputs": []
+}
