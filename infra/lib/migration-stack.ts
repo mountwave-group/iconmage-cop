@@ -59,7 +59,14 @@ export class MigrationStack extends Stack {
       entryPoint: ['/bin/sh'],
       command: [
         '-c',
-        'export DATABASE_URL="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:5432/$POSTGRES_DB?schema=public" && npx prisma migrate deploy && node dist/prisma/seed.js',
+        [
+          'export DATABASE_URL="postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:5432/$POSTGRES_DB?schema=public"',
+          // Self-heal: clear any prior failed-state record for the buggy
+          // 20260502201500_fix_seed_uuids migration. No-op if not failed.
+          'npx prisma migrate resolve --rolled-back 20260502201500_fix_seed_uuids 2>/dev/null || true',
+          'npx prisma migrate deploy',
+          'node dist/prisma/seed.js',
+        ].join(' && '),
       ],
     })
 
