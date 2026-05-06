@@ -136,8 +136,11 @@ export function ProjectFormModal({
         status: state.status,
         stageCurrent: parseInt(state.stageCurrent, 10),
         stageTotal: parseInt(state.stageTotal, 10),
-        dueAt: state.dueAt ? new Date(state.dueAt).toISOString() : null,
         currency: state.currency.toUpperCase(),
+      }
+      // Only include dueAt if a date is selected (avoid sending null)
+      if (state.dueAt) {
+        payload.dueAt = new Date(state.dueAt).toISOString()
       }
       if (canSetBudget) {
         payload.budgetCents = state.budget ? Math.round(Number(state.budget) * 100) : null
